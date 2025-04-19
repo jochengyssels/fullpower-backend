@@ -1,0 +1,43 @@
+app/routes/agents.py
+```python
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/agents", tags=["agents"])
+
+@router.get("/")
+def list_agents():
+    return {
+        "agents": [
+            {"id": "demo", "name": "Demo Agent", "endpoint": "/agents/demo/run"},
+            {"id": "profile", "name": "Profile Agent", "endpoint": "/agents/profile/run"},
+        ]
+    }
+```
+
+app/agents/profile/agent.py
+```python
+def run_agent():
+    return {"status": "ProfileAgent executed"}
+```
+
+app/routes/profile.py
+```python
+from fastapi import APIRouter
+from app.agents.profile.agent import run_agent
+
+router = APIRouter(prefix="/agents")
+
+@router.get("/profile/run")
+def profile_agent_run():
+    return run_agent()
+```
+
+main.py
+```python
+from app.routes import health, demo, profile, agents
+
+app.include_router(health.router)
+app.include_router(demo.router)
+app.include_router(profile.router)
+app.include_router(agents.router)
+```
